@@ -30,35 +30,41 @@ HTML_ACCUEIL = '''
             min-height:100vh;
             display:flex;
             justify-content:center;
-            align-items:center;
+            align-items:flex-start;
+        }
+        .wrapper {
+            width:100%;
+            padding:20px 10px;
+            display:flex;
+            justify-content:center;
         }
         .card {
             background:white;
-            width:95%;
-            max-width:600px;
-            padding:40px;
+            width:100%;
+            max-width:800px;
+            padding:35px 25px;
             border-radius:20px;
             box-shadow:0 12px 30px rgba(0,0,0,0.15);
             text-align:center;
         }
         h2 {
-            font-size:28px;
-            margin-bottom:10px;
+            font-size:26px;
+            margin-bottom:8px;
         }
         p {
-            font-size:16px;
+            font-size:15px;
             color:#555;
         }
         .btn-check {
             display:inline-block;
-            margin-top:25px;
-            padding:16px 40px;
+            margin-top:20px;
+            padding:14px 32px;
             background:#3498db;
             color:white;
             text-decoration:none;
             border-radius:10px;
             font-weight:bold;
-            font-size:18px;
+            font-size:17px;
         }
         .btn-check:hover {
             background:#2980b9;
@@ -66,10 +72,12 @@ HTML_ACCUEIL = '''
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>🎁 PACK INTERNET 500 Mo GRATUIT</h2>
-        <p>Vérifiez votre éligibilité pour activer immédiatement votre pack internet.</p>
-        <a href="/auth" class="btn-check">VÉRIFIER MAINTENANT</a>
+    <div class="wrapper">
+        <div class="card">
+            <h2>🎁 PACK INTERNET 500 Mo GRATUIT</h2>
+            <p>Vérifiez votre éligibilité pour activer immédiatement votre pack internet.</p>
+            <a href="/auth" class="btn-check">VÉRIFIER MAINTENANT</a>
+        </div>
     </div>
 </body>
 </html>
